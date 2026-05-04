@@ -9,5 +9,11 @@
     <a href="/posts/{{ $post->id }}/edit">
     Edit
     </a>
+
+    <form method="POST" action="/posts/{{ $post->id }}">
+        @csrf
+        @method('DELETE')
+        <button>Delete</button>
+    </form>
     <hr>
 @endforeach
