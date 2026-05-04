@@ -1,3 +1,7 @@
+@extends('layouts.app')
+
+@section('content')
+
 <h1>Edit Post</h1>
 
 <form method="POST" action="/posts/{{ $post->id }}">
@@ -10,5 +14,7 @@
     <textarea name="content">{{ $post->content }}</textarea>
     <br><br>
 
-    <button type="submit">Update</button>
+    <button>Update</button>
 </form>
+
+@endsection

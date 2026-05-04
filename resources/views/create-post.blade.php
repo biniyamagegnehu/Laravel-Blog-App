@@ -1,3 +1,7 @@
+@extends('layouts.app')
+
+@section('content')
+
 <h1>Create Post</h1>
 
 @if($errors->any())
@@ -17,5 +21,7 @@
     <textarea name="content" placeholder="Content"></textarea>
     <br><br>
 
-    <button type="submit">Save</button>
+    <button>Save</button>
 </form>
+
+@endsection
