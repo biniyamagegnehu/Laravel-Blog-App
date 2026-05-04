@@ -22,6 +22,11 @@ class PostController extends Controller
     // Store post
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => 'required|min:3',
+            'content' => 'required|min:10',
+        ]);
+
         Post::create([
             'title' => $request->title,
             'content' => $request->content,
