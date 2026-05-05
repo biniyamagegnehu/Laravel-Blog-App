@@ -2,21 +2,35 @@
 
 @section('content')
 
-<h1>All Posts</h1>
+<h1 class="text-2xl font-bold mb-4">All Posts</h1>
 
 @foreach($posts as $post)
-    <h2>{{ $post->title }}</h2>
-    <p>{{ $post->content }}</p>
+    <div class="border p-4 rounded mb-4 shadow-sm">
 
-    <a href="/posts/{{ $post->id }}/edit">Edit</a>
+        <h2 class="text-xl font-semibold text-blue-600">
+            {{ $post->title }}
+        </h2>
 
-    <form method="POST" action="/posts/{{ $post->id }}">
-        @csrf
-        @method('DELETE')
-        <button>Delete</button>
-    </form>
+        <p class="text-gray-700 mt-2">
+            {{ $post->content }}
+        </p>
 
-    <hr>
+        @auth
+            @if($post->user_id === auth()->id())
+                <div class="mt-3 space-x-3">
+                    <a href="/posts/{{ $post->id }}/edit"
+                       class="text-yellow-600">Edit</a>
+
+                    <form method="POST" action="/posts/{{ $post->id }}" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button class="text-red-600">Delete</button>
+                    </form>
+                </div>
+            @endif
+        @endauth
+
+    </div>
 @endforeach
 
 @endsection

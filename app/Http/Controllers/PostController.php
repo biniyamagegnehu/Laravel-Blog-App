@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -30,34 +31,42 @@ class PostController extends Controller
         Post::create([
             'title' => $request->title,
             'content' => $request->content,
+            'user_id' => Auth::id(), // 🔥 THIS LINE FIXES EVERYTHING
         ]);
 
-        return redirect('/posts');
+        return redirect('/posts')->with('success', 'Post created!');
     }
 
     public function edit(Post $post)
     {
+        if ($post->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         return view('edit-post', compact('post'));
     }
 
-    public function update(Request $request, Post $post)
-        {
-            $request->validate([
-                'title' => 'required',
-                'content' => 'required',
-            ]);
-
-            $post->update([
-                'title' => $request->title,
-                'content' => $request->content,
-            ]);
-
-            return redirect('/posts');
+   public function update(Request $request, Post $post)
+    {
+        if ($post->user_id !== Auth::id()) {
+            abort(403);
         }
 
-        public function destroy(Post $post)
-        {
-            $post->delete();
-            return redirect('/posts');
+        $post->update([
+            'title' => $request->title,
+            'content' => $request->content,
+        ]);
+
+        return redirect('/posts');
+    }
+    public function destroy(Post $post)
+    {
+        if ($post->user_id !== Auth::id()) {
+            abort(403);
         }
+
+        $post->delete();
+
+        return redirect('/posts');
+    }
 }
