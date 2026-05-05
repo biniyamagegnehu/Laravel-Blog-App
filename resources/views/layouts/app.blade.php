@@ -16,6 +16,7 @@
             <a href="/posts/create" class="text-gray-700 hover:text-blue-500">Create</a>
 
             @auth
+                <a href="/dashboard" class="text-gray-700 hover:text-blue-500">Dashboard</a>
                 <span class="text-gray-600">{{ auth()->user()->name }}</span>
 
                 <form method="POST" action="/logout" class="inline">

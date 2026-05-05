@@ -69,4 +69,12 @@ class PostController extends Controller
 
         return redirect('/posts');
     }
+
+    public function dashboard()
+    {
+        $posts = Auth::user()->posts()->latest()->paginate(5);
+
+        return view('dashboard', compact('posts'));
+    }
+
 }
