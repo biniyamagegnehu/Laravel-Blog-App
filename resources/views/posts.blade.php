@@ -13,6 +13,19 @@
             Search
         </button>
     </form>
+    <div class="mb-4 flex gap-2 flex-wrap">
+    <a href="/posts"
+       class="px-3 py-1 bg-gray-200 rounded">
+        All
+    </a>
+
+    @foreach($categories as $category)
+        <a href="/posts?category={{ $category->id }}&search={{ request('search') }}"
+           class="px-3 py-1 bg-blue-100 text-blue-700 rounded">
+            {{ $category->name }}
+        </a>
+    @endforeach
+</div>
 
 @foreach($posts as $post)
     <div class="border p-4 rounded mb-4 shadow-sm">

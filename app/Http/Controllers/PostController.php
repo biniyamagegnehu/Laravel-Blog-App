@@ -14,14 +14,22 @@ class PostController extends Controller
     {
         $query = Post::query();
 
+        // 🔍 Search
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%')
                 ->orWhere('content', 'like', '%' . $request->search . '%');
         }
 
+        // 🏷 Category filter
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
         $posts = $query->latest()->paginate(5);
 
-        return view('posts', compact('posts'));
+        $categories = Category::all();
+
+        return view('posts', compact('posts', 'categories'));
     }
 
     public function create()
@@ -32,22 +40,23 @@ class PostController extends Controller
        }
 
     // Store post
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|min:3',
-            'content' => 'required|min:10',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'title' => 'required',
+        'content' => 'required',
+        'category_id' => 'required|exists:categories,id',
+    ]);
 
-        Post::create([
-            'title' => $request->title,
-            'content' => $request->content,
-            'user_id' => Auth::id(),
-            'category_id' => $request->category_id,
-        ]);
+    Post::create([
+        'title' => $request->title,
+        'content' => $request->content,
+        'user_id' => auth()->id(),
+        'category_id' => $request->category_id, // 🔥 THIS WAS MISSING
+    ]);
 
-        return redirect('/posts')->with('success', 'Post created!');
-    }
+    return redirect('/posts')->with('success', 'Post created successfully!');
+}   
 
     public function edit(Post $post)
     {

@@ -22,7 +22,6 @@
             </option>
         @endforeach
     </select>
-    
     <input type="text" name="title"
            placeholder="Title"
            class="w-full border p-2 rounded">
