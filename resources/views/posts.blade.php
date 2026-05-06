@@ -24,6 +24,9 @@
         <p class="text-gray-700 mt-2">
             {{ $post->content }}
         </p>
+        <p class="text-sm text-blue-500">
+            Category: {{ $post->category->name ?? 'None' }}
+        </p>
 
         @auth
             @if($post->user_id === auth()->id())

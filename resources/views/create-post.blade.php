@@ -15,6 +15,14 @@
 <form method="POST" action="/posts" class="space-y-4">
     @csrf
 
+    <select name="category_id" class="w-full border p-2 rounded">
+        @foreach($categories as $category)
+            <option value="{{ $category->id }}">
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+    
     <input type="text" name="title"
            placeholder="Title"
            class="w-full border p-2 rounded">

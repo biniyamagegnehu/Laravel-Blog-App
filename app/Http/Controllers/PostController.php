@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Category;
 
 use Illuminate\Http\Request;
 
@@ -25,8 +26,10 @@ class PostController extends Controller
 
     public function create()
         {
-            return view('create-post');
-        }
+        $categories = Category::all();
+
+        return view('create-post', compact('categories'));   
+       }
 
     // Store post
     public function store(Request $request)
@@ -39,7 +42,8 @@ class PostController extends Controller
         Post::create([
             'title' => $request->title,
             'content' => $request->content,
-            'user_id' => Auth::id(), // 🔥 THIS LINE FIXES EVERYTHING
+            'user_id' => Auth::id(),
+            'category_id' => $request->category_id,
         ]);
 
         return redirect('/posts')->with('success', 'Post created!');
