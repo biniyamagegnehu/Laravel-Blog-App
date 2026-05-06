@@ -2,7 +2,17 @@
 
 @section('content')
 
-<h1 class="text-2xl font-bold mb-4">All Posts</h1>
+    <h1 class="text-2xl font-bold mb-4">All Posts</h1>
+    <form method="GET" action="/posts" class="mb-4 flex gap-2">
+        <input type="text" name="search"
+            value="{{ request('search') }}"
+            placeholder="Search posts..."
+            class="border p-2 rounded w-full">
+
+        <button class="bg-blue-500 text-white px-4 rounded">
+            Search
+        </button>
+    </form>
 
 @foreach($posts as $post)
     <div class="border p-4 rounded mb-4 shadow-sm">

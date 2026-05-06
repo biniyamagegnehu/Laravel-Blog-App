@@ -9,9 +9,17 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     // Show all posts
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::all();
+        $query = Post::query();
+
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%')
+                ->orWhere('content', 'like', '%' . $request->search . '%');
+        }
+
+        $posts = $query->latest()->paginate(5);
+
         return view('posts', compact('posts'));
     }
 
