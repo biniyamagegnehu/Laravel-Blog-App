@@ -33,4 +33,30 @@ class CommentController extends Controller
 
         return back()->with('success', 'Comment deleted.');
     }
+
+    public function edit(Comment $comment)
+    {
+        if (auth()->id() !== $comment->user_id) {
+            abort(403);
+        }
+
+        return view('comments.edit', compact('comment'));
+    }
+    public function update(Request $request, Comment $comment)
+    {
+        if (auth()->id() !== $comment->user_id) {
+            abort(403);
+        }
+
+        $request->validate([
+            'content' => 'required',
+        ]);
+
+        $comment->update([
+            'content' => $request->content,
+        ]);
+
+        return redirect('/posts/' . $comment->post_id)
+            ->with('success', 'Comment updated.');
+    }
 }
