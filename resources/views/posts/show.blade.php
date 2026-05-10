@@ -1,102 +1,201 @@
-<h1 class="text-2xl font-bold">{{ $post->title }}</h1>
+@extends('layouts.app')
 
-<p class="text-gray-600 mt-2">
-    Category: {{ $post->category->name ?? 'No Category' }}
-</p>
+@section('content')
 
-<p class="mt-4">
-    {{ $post->content }}
-</p>
+<div class="max-w-4xl mx-auto px-4 py-10">
 
-<p class="text-sm text-gray-400 mt-6">
-    Author: {{ $post->user->name ?? 'Unknown' }}
-</p>
-<hr class="my-6">
+    <!-- Post Card -->
+    <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
 
-<h2 class="text-xl font-bold mb-4">Comments</h2>
+        <!-- Header -->
+        <div class="p-8 border-b">
 
-@if ($errors->any())
+            <!-- Category -->
+            <span class="inline-block bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full mb-4">
+                {{ $post->category->name ?? 'Uncategorized' }}
+            </span>
 
-    <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+            <!-- Title -->
+            <h1 class="text-4xl font-bold text-gray-900 leading-tight">
+                {{ $post->title }}
+            </h1>
 
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+            <!-- Author -->
+            <div class="flex items-center mt-6">
 
-    </div>
+                <div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center text-lg font-bold">
+                    {{ strtoupper(substr($post->user->name, 0, 1)) }}
+                </div>
 
-@endif
+                <div class="ml-4">
+                    <p class="font-semibold text-gray-800">
+                        {{ $post->user->name }}
+                    </p>
 
-<form method="POST" action="/posts/{{ $post->id }}/comments">
-    @csrf
+                    <p class="text-sm text-gray-500">
+                        Posted {{ $post->created_at->diffForHumans() }}
+                    </p>
+                </div>
 
-    <textarea
-        name="content"
-        class="w-full border p-3 rounded mb-3"
-        placeholder="Write a comment..."
-    ></textarea>
-
-    <button class="bg-blue-500 text-white px-4 py-2 rounded">
-        Add Comment
-    </button>
-</form>
-
-    @if($post->comments->count() === 0)
-
-    <p class="text-gray-500">
-        No comments yet.
-    </p>
-
-    @endif
-
-    @foreach($post->comments as $comment)
-
-        <div class="border p-4 rounded mb-4">
-
-            <div class="flex justify-between items-center">
-
-                <p class="font-bold">
-                    {{ $comment->user->name }}
-                </p>
+            </div>
 
         </div>
 
-        <p class="mt-3">
-            {{ $comment->content }}
-        </p>
+        <!-- Content -->
+        <div class="p-8">
 
-        <p class="text-sm text-gray-500 mt-2">
-            {{ $comment->created_at->diffForHumans() }}
-        </p>
+            <div class="prose max-w-none text-gray-700 leading-8 text-lg">
+                {!! nl2br(e($post->content)) !!}
+            </div>
 
-                @if(auth()->id() === $comment->user_id)
+        </div>
 
-            <div class="flex gap-2">
+    </div>
 
-                <a href="/comments/{{ $comment->id }}/edit"
-                class="bg-yellow-500 text-white px-3 py-1 rounded">
-                    Edit
-                </a>
+    <!-- Comments Section -->
+    <div class="mt-10">
 
-                <form method="POST"
-                    action="/comments/{{ $comment->id }}">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">
+            Comments ({{ $post->comments->count() }})
+        </h2>
+
+        <!-- Validation Errors -->
+        @if ($errors->any())
+
+            <div class="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg mb-6">
+
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+
+            </div>
+
+        @endif
+
+        <!-- Comment Form -->
+        @auth
+
+            <div class="bg-white shadow rounded-2xl p-6 mb-8">
+
+                <form method="POST" action="/posts/{{ $post->id }}/comments">
 
                     @csrf
-                    @method('DELETE')
+
+                    <textarea
+                        name="content"
+                        rows="4"
+                        class="w-full border border-gray-300 rounded-xl p-4 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                        placeholder="Write your thoughts..."
+                    ></textarea>
 
                     <button
-                        class="bg-red-500 text-white px-3 py-1 rounded">
-                        Delete
+                        class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition">
+
+                        Add Comment
+
                     </button>
 
                 </form>
 
             </div>
 
+        @else
+
+            <div class="bg-yellow-100 text-yellow-700 p-4 rounded-lg mb-8">
+                Please login to write a comment.
+            </div>
+
+        @endauth
+
+        <!-- Empty State -->
+        @if($post->comments->count() === 0)
+
+            <div class="bg-gray-100 text-gray-500 p-6 rounded-xl text-center">
+                No comments yet. Be the first to comment!
+            </div>
+
         @endif
+
+        <!-- Comments List -->
+        <div class="space-y-6">
+
+            @foreach($post->comments as $comment)
+
+                <div class="bg-white shadow rounded-2xl p-6">
+
+                    <div class="flex justify-between items-start">
+
+                        <div class="flex items-center">
+
+                            <!-- Avatar -->
+                            <div class="w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold">
+                                {{ strtoupper(substr($comment->user->name, 0, 1)) }}
+                            </div>
+
+                            <div class="ml-3">
+
+                                <p class="font-semibold text-gray-800">
+                                    {{ $comment->user->name }}
+                                </p>
+
+                                <p class="text-sm text-gray-500">
+                                    {{ $comment->created_at->diffForHumans() }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Actions -->
+                        @if(auth()->id() === $comment->user_id)
+
+                            <div class="flex gap-2">
+
+                                <a href="/comments/{{ $comment->id }}/edit"
+                                   class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm">
+
+                                    Edit
+
+                                </a>
+
+                                <form method="POST"
+                                      action="/comments/{{ $comment->id }}">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm">
+
+                                        Delete
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        @endif
+
+                    </div>
+
+                    <!-- Comment Content -->
+                    <div class="mt-4 text-gray-700 leading-7">
+
+                        {!! nl2br(e($comment->content)) !!}
+
+                    </div>
+
+                </div>
+
+            @endforeach
+
+        </div>
 
     </div>
 
-@endforeach
+</div>
+
+@endsection
