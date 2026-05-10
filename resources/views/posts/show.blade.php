@@ -11,3 +11,39 @@
 <p class="text-sm text-gray-400 mt-6">
     Author: {{ $post->user->name ?? 'Unknown' }}
 </p>
+<hr class="my-6">
+
+<h2 class="text-xl font-bold mb-4">Comments</h2>
+
+<form method="POST" action="/posts/{{ $post->id }}/comments">
+    @csrf
+
+    <textarea
+        name="content"
+        class="w-full border p-3 rounded mb-3"
+        placeholder="Write a comment..."
+    ></textarea>
+
+    <button class="bg-blue-500 text-white px-4 py-2 rounded">
+        Add Comment
+    </button>
+</form>
+<div class="mt-6 space-y-4">
+
+    @foreach($post->comments as $comment)
+
+        <div class="border p-4 rounded">
+
+            <p class="font-bold">
+                {{ $comment->user->name }}
+            </p>
+
+            <p class="mt-2">
+                {{ $comment->content }}
+            </p>
+
+        </div>
+
+    @endforeach
+
+</div>
