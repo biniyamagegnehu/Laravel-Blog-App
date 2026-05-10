@@ -30,8 +30,11 @@
 @foreach($posts as $post)
     <div class="border p-4 rounded mb-4 shadow-sm">
 
+
         <h2 class="text-xl font-semibold text-blue-600">
-            {{ $post->title }}
+            <a href="/posts/{{ $post->id }}">
+                {{ $post->title }}
+            </a>
         </h2>
 
         <p class="text-gray-700 mt-2">
