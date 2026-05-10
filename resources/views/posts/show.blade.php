@@ -28,22 +28,39 @@
         Add Comment
     </button>
 </form>
-<div class="mt-6 space-y-4">
+@foreach($post->comments as $comment)
 
-    @foreach($post->comments as $comment)
+    <div class="border p-4 rounded mb-4">
 
-        <div class="border p-4 rounded">
+        <div class="flex justify-between items-center">
 
             <p class="font-bold">
                 {{ $comment->user->name }}
             </p>
 
-            <p class="mt-2">
-                {{ $comment->content }}
-            </p>
+            @if(auth()->id() === $comment->user_id)
+
+                <form method="POST"
+                      action="/comments/{{ $comment->id }}">
+
+                    @csrf
+                    @method('DELETE')
+
+                    <button
+                        class="bg-red-500 text-white px-3 py-1 rounded">
+                        Delete
+                    </button>
+
+                </form>
+
+            @endif
 
         </div>
 
-    @endforeach
+        <p class="mt-3">
+            {{ $comment->content }}
+        </p>
 
-</div>
+    </div>
+
+@endforeach
