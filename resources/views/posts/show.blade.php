@@ -62,6 +62,37 @@
 
     </div>
 
+    @auth
+
+    <form method="POST"
+          action="/posts/{{ $post->id }}/like"
+          class="mt-6">
+
+        @csrf
+
+        <button
+            class="flex items-center gap-2 bg-pink-100 hover:bg-pink-200 text-pink-700 px-5 py-3 rounded-2xl transition font-semibold">
+
+            @if(auth()->user()->likedPosts->contains($post->id))
+
+                ❤️ Unlike
+
+            @else
+
+                🤍 Like
+
+            @endif
+
+            <span>
+                ({{ $post->likedUsers->count() }})
+            </span>
+
+        </button>
+
+    </form>
+
+@endauth
+
     <!-- Comments Section -->
     <div class="mt-10">
 

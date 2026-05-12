@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,5 +34,7 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::get('/posts/{id}', [PostController::class, 'show']);
 Route::get('/posts', [PostController::class, 'index']);
+Route::post('/posts/{post}/like', [LikeController::class, 'toggle'])
+    ->middleware('auth');
 
 require __DIR__.'/auth.php';
