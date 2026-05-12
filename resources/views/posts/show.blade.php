@@ -27,6 +27,16 @@
                     {{ strtoupper(substr($post->user->name, 0, 1)) }}
                 </div>
 
+                @if($post->image)
+
+    <img
+        src="{{ asset('storage/' . $post->image) }}"
+        class="w-full h-[450px] object-cover rounded-t-2xl"
+        alt="{{ $post->title }}"
+    >
+
+@endif
+
                 <div class="ml-4">
                     <p class="font-semibold text-gray-800">
                         {{ $post->user->name }}

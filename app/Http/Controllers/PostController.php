@@ -40,23 +40,36 @@ class PostController extends Controller
        }
 
     // Store post
-public function store(Request $request)
-{
-    $request->validate([
-        'title' => 'required',
-        'content' => 'required',
-        'category_id' => 'required|exists:categories,id',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+            'category_id' => 'required',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
 
-    Post::create([
-        'title' => $request->title,
-        'content' => $request->content,
-        'user_id' => auth()->id(),
-        'category_id' => $request->category_id, // 🔥 THIS WAS MISSING
-    ]);
+        $imagePath = null;
 
-    return redirect('/posts')->with('success', 'Post created successfully!');
-}   
+        // Check if image uploaded
+        if ($request->hasFile('image')) {
+
+            $imagePath = $request->file('image')
+                ->store('posts', 'public');
+
+        }
+
+        Post::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'category_id' => $request->category_id,
+            'user_id' => auth()->id(),
+            'image' => $imagePath,
+        ]);
+
+        return redirect('/posts')
+            ->with('success', 'Post created successfully.');
+    }  
 
     public function edit(Post $post)
     {

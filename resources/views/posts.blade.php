@@ -138,6 +138,16 @@
                     <!-- Content Preview -->
                     <p class="text-gray-600 mt-4 leading-7">
 
+                            @if($post->image)
+
+            <img
+                src="{{ asset('storage/' . $post->image) }}"
+                class="w-full h-52 object-cover"
+                alt="{{ $post->title }}"
+            >
+
+        @endif
+
                         {{ Str::limit($post->content, 140) }}
 
                     </p>

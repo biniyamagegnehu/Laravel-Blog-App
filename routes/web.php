@@ -20,8 +20,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [PostController::class, 'dashboard'])->name('dashboard');
 });
 
-Route::get('/posts', [PostController::class, 'index']);
-Route::get('/posts/{id}', [PostController::class, 'show']);
 Route::middleware(['auth'])->group(function () {
     Route::get('/posts/create', [PostController::class, 'create']);
     Route::post('/posts', [PostController::class, 'store']);
@@ -33,5 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/comments/{comment}/edit', [CommentController::class, 'edit']);
     Route::put('/comments/{comment}', [CommentController::class, 'update']);
 });
+Route::get('/posts/{id}', [PostController::class, 'show']);
+Route::get('/posts', [PostController::class, 'index']);
 
 require __DIR__.'/auth.php';
