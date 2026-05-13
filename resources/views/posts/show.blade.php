@@ -64,34 +64,71 @@
 
     @auth
 
-    <form method="POST"
-          action="/posts/{{ $post->id }}/like"
-          class="mt-6">
+        <div class="mt-6">
 
-        @csrf
+            <button
+                id="like-button"
+                class="flex items-center gap-2 bg-pink-100 hover:bg-pink-200 text-pink-700 px-5 py-3 rounded-2xl transition font-semibold">
 
-        <button
-            class="flex items-center gap-2 bg-pink-100 hover:bg-pink-200 text-pink-700 px-5 py-3 rounded-2xl transition font-semibold">
+                <span id="like-text">
 
-            @if(auth()->user()->likedPosts->contains($post->id))
+                    @if(auth()->user()->likedPosts->contains($post->id))
+                        ❤️ Unlike
+                    @else
+                        🤍 Like
+                    @endif
 
-                ❤️ Unlike
+                </span>
 
-            @else
+                <span id="like-count">
+                    ({{ $post->likedUsers->count() }})
+                </span>
 
-                🤍 Like
+            </button>
 
-            @endif
+        </div>
 
-            <span>
-                ({{ $post->likedUsers->count() }})
-            </span>
+    @endauth
 
-        </button>
+    <script>
 
-    </form>
+document.getElementById('like-button')
+    .addEventListener('click', async function () {
 
-@endauth
+        const response = await fetch(
+            '/posts/{{ $post->id }}/like',
+            {
+                method: 'POST',
+
+                headers: {
+                    'X-CSRF-TOKEN':
+                        '{{ csrf_token() }}',
+
+                    'Accept':
+                        'application/json',
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        // Update text
+        document.getElementById('like-text')
+            .innerHTML = data.liked
+                ? '❤️ Unlike'
+                : '🤍 Like';
+
+        // Update count
+        document.getElementById('like-count')
+            .innerHTML = `(${data.count})`;
+
+    });
+
+    const button = document.getElementById('like-button');
+
+    button.disabled = true;
+    button.disabled = false;
+</script>
 
     <!-- Comments Section -->
     <div class="mt-10">
